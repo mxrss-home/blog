@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: ci-blog-
+spec:
+  entrypoint: blog-checkout
+  volumeClaimTemplates:
+    - metadata: 
+        name: workdir
+      spec:
+        storageClassName: nfs-client
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+
+  templates:
+  - name: blog-checkout
+    container:
+      image: alpine/git
+      command: [sh, -c]
+      args: ["git clone https://github.com/mxrss-home/blog.git /work"]
+      volumeMounts:                     #same syntax as k8s Pod spec
+      - name: workdir
+        mountPath: /work
+      env:
+      - name: DOCKER_HOST               #the docker daemon can be access on the standard port on localhost
+        value: 127.0.0.1
+    
