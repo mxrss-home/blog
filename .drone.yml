@@ -1,13 +1,6 @@
 pipeline:
-  build:
-    image: golang
-    commands:
-      - go get
-      - go build
-      - go test
-
-services:
-  postgres:
-    image: postgres:9.4.5
-    environment:
-      - POSTGRES_USER=myapp
+  hugo:
+    image: cbrgm/drone-hugo:latest
+    buildDrafts: false
+    buildExpired: false
+    buildFuture: false
